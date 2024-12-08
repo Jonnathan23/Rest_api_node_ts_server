@@ -62,3 +62,22 @@ Para ejecutar coverage, demos configurar nuestro package.json, colocar esto en n
 ```json
 "test:coverage": "npm run pretest && jest --detectOpenHandles --coverage"
 ```
+
+### Forzar errores
+Para simular errores en nuestro código podemos utilizar ``mock``, le pasamos como parametro la ruta de nuestra variable, en este caso ``db``. Posterior a ello con ``spyOn()`` en su parametro le pasamos nuestra variable y el metetodo que quemaros observar su comportamiento, por ejemplo ``authenticate()`` en formato ``string``
+
+````ts
+
+jest.mock('../config/db')
+
+describe('connect DB', () => {
+    it('should hanlde databe connection error', async () => {
+        jest.spyOn(db, 'authenticate').mockRejectedValueOnce(new Error('Error al conectar a la BD'))
+        const consoleSpy = jest.spyOn(console, 'log')
+
+        await connectDB()
+
+        expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Error al conectar a la BD'))
+    })
+})
+```

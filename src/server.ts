@@ -4,14 +4,14 @@ import router from "./routes";
 import db from "./config/db";
 
 // Conectar a base de datos
-async function connectDB() {
+export async function connectDB() {
     try {
         await db.authenticate()
         db.sync()
        // console.log(colors.blue.bold('Conexion exitosa a la BD'))
     } catch (error) {
         //console.log(error)
-        //console.log(colors.red.bold('Error al conectar a la BD'))
+        console.log(colors.red.bold('Error al conectar a la BD'))
     }
 }
 
