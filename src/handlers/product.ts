@@ -34,7 +34,7 @@ export const createProduct = async (req: Request, res: Response) => {
     try {
         //Add products
         const product = await Products.create(req.body)
-        res.json({ data: product })
+        res.status(201).json({ data: product })
     } catch (error) {
         console.log(error)
     }

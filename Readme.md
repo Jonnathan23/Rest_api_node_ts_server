@@ -1,6 +1,11 @@
 # Backend
 
-## Testing
+## Testing con JEST
+Jest puede leer archivos de 3 formas:
+
+* Archivos con la extensión .test.js
+* Archivos con la extensión .spect.js
+* Archivos dentro de la carpeta __tests__
 
 ### Instalación de dependencias
 
@@ -12,4 +17,36 @@ npm i -D supertest @types/supertest jest @types/jest ts-jest
 
 ```bash
 npx ts-jest config:init
+```
+
+### Configuraciones
+
+Configuración en el package.json para ejecutar tests
+
+```json
+"test": "jest --detectOpenHandles"
+```
+
+Para evitar llenar nuestra base de datos con los objetos que creamos en nuestros tests podemos limpiarla de esta forma
+
+```ts
+const clearDB = async () => {
+    try {
+        await db.sync({ force: true })
+        console.log('Datos eliminados correctamente')
+        exit()
+    } catch (error) {
+        console.log(error)
+        exit(1)
+    }
+}
+// detectar el comando de nuestra terminal para ejecutar la función
+if (process.argv[2] === '--clear') {
+    clearDB()
+}
+```
+
+Para ejecutar ese código de forma automática lo que podemos hacer es colocar el comando reservado ``"pretest"``, el cual se ejecuta automaticamente antes del comando ``"test"`` ,es decir, no es necesario llamarlo desde nuestra terminal
+```json
+"pretest": "ts-node ./src/data --clear"
 ```

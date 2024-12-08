@@ -4,9 +4,9 @@
   "description": "REST API's con Express y Typescript",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --exec ts-node src/index.ts",
-    "build": "",
-    "test": "jest --detectOpenHandles"
+    "dev": "nodemon --exec ts-node src/index.ts",    
+    "test": "jest --detectOpenHandles",
+    "pretest": "ts-node ./src/data --clear"
   },
   "repository": {
     "type": "git",
