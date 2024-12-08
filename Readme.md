@@ -50,3 +50,15 @@ Para ejecutar ese código de forma automática lo que podemos hacer es colocar e
 ```json
 "pretest": "ts-node ./src/data --clear"
 ```
+### Code Coverage
+Es una metrica utilizada para medir la cantidad de codigo cubierto por las pruebas.
+
+#### Metricas de coverage
+* < 60% -> No es suficiente
+* 60% - 80% -> se puede mejorar
+* >= 80% -> Es suficiente y una buena medida
+
+Para ejecutar coverage, demos configurar nuestro package.json, colocar esto en nuestros scripts
+```json
+"test:coverage": "npm run pretest && jest --detectOpenHandles --coverage"
+```
