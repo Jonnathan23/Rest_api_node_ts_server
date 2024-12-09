@@ -66,7 +66,7 @@ Para ejecutar coverage, demos configurar nuestro package.json, colocar esto en n
 ### Forzar errores
 Para simular errores en nuestro código podemos utilizar ``mock``, le pasamos como parametro la ruta de nuestra variable, en este caso ``db``. Posterior a ello con ``spyOn()`` en su parametro le pasamos nuestra variable y el metetodo que quemaros observar su comportamiento, por ejemplo ``authenticate()`` en formato ``string``
 
-````ts
+```ts
 
 jest.mock('../config/db')
 
@@ -81,3 +81,16 @@ describe('connect DB', () => {
     })
 })
 ```
+
+
+## Documentacion
+
+instalar dependencias
+```bash
+npm i swagger-jsdoc swagger-ui-express
+```
+
+```bash
+npm i -D @types/swagger-jsdoc @types/swagger-ui-express
+```
+
