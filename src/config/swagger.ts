@@ -25,10 +25,11 @@ const swaggerUIOptions: SwaggerUiOptions = {
     customCss: `
     .topbar-wrapper .link{
         content: url('https://purina.com.ec/sites/default/files/styles/webp/public/2022-10/purina-10-datos-curiosos-sobre-los-gatos.png.webp?itok=rg1FkRuN');
-        height: 120px;
+        height: 80px;
         width: auto;
     }
-    `
+    `,
+    customSiteTitle: 'Documentacion REST API Express Typescript'
 }
 
 export default swaggerSpec
