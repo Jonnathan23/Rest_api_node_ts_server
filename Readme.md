@@ -94,3 +94,7 @@ npm i swagger-jsdoc swagger-ui-express
 npm i -D @types/swagger-jsdoc @types/swagger-ui-express
 ```
 
+## Morgan
+```bash
+npm i morgan
+```

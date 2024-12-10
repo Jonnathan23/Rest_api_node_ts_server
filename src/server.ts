@@ -5,6 +5,7 @@ import cors, { CorsOptions } from 'cors'
 import express from "express";
 import router from "./routes";
 import db from "./config/db";
+import morgan from 'morgan';
 
 // Conectar a base de datos
 export async function connectDB() {
@@ -25,7 +26,7 @@ const server = express()
 // CORS
 const corsOptions: CorsOptions = {
     origin: function (origin, callback) {
-        if (origin === process.env.FRONTEND_URL || origin === process.env.BACKEND_URL) {
+        if (origin === process.env.FRONTEND_URL) {
             callback(null, true)
         } else {
             callback(new Error('Not allowed by CORS'))
@@ -37,6 +38,7 @@ server.use(cors(corsOptions))
 
 // Read forms' data
 server.use(express.json())
+server.use(morgan('dev'))
 server.use('/api/products', router)
 
 
