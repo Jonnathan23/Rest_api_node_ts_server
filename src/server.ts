@@ -12,9 +12,9 @@ export async function connectDB() {
     try {
         await db.authenticate()
         db.sync()
-        // console.log(colors.blue.bold('Conexion exitosa a la BD'))
+        console.log(colors.blue.bold('Conexion exitosa a la BD'))
     } catch (error) {
-        //console.log(error)    
+        console.log(error)    
         console.log(colors.red.bold('Error al conectar a la BD'))
     }
 }
@@ -26,7 +26,7 @@ const server = express()
 // CORS
 const corsOptions: CorsOptions = {
     origin: function (origin, callback) {
-        if (origin === process.env.FRONTEND_URL) {
+        if (origin === process.env.FRONTEND_URL || origin === undefined) {
             callback(null, true)
         } else {
             callback(new Error('Not allowed by CORS'))
