@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec ts-node src/index.ts",
+    "dev:api": "nodemon --exec ts-node src/index.ts --api",
     "build": "tsc",
     "test": "jest --detectOpenHandles",
     "test:coverage": "npm run pretest && jest --detectOpenHandles --coverage",
@@ -45,6 +46,7 @@
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "env-var": "^7.5.0",
     "express": "^4.19.2",
     "express-validator": "^7.1.0",
     "morgan": "^1.10.0",
@@ -56,6 +58,6 @@
     "swagger-ui-express": "^5.0.1"
   },
   "engines": {
-    "node": "20.x"
+    "node": ">= 22.x.x"
   }
 }
