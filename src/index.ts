@@ -6,7 +6,6 @@ import router from './routes'
     main()
 })()
 
-
 async function main() {
     //Connect DB
     const urlDatabase = envs.DATABASE_URL
@@ -26,6 +25,7 @@ async function main() {
     const corsConfig = new CorsConfig(corsOptions).corsOptions
 
     //Start server
-    new Server({ port: envs.PORT, router: router, corsConfig }).starApp()
+    const server = new Server({ port: envs.PORT, router: router, corsConfig })
+    server.starApp()
+    return server
 }
-

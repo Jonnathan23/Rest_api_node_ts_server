@@ -1,12 +1,18 @@
 import request from 'supertest'
-import server from '../../server'
-import { ExpressValidator } from 'express-validator'
+import { makeAppForTests } from '../../__tests__/makeAppForTests'
 
+let app: import('express').Express;
+
+beforeAll(async () => {
+    // usa connectDB:true si QUIERES realmente conectar a BD en pruebas
+    app = await makeAppForTests({ connectDB: false });
+});
 
 describe('POST /api/products', () => {
 
+
     it('should validate that the price is a number and greater than 0', async () => {
-        const response = await request(server).post('/api/products').send({
+        const response = await request(app).post('/api/products').send({
             name: "Mouse - Testing",
             price: "Hola"
         })
@@ -17,7 +23,7 @@ describe('POST /api/products', () => {
     })
 
     it('should validate that the price is greater than 0', async () => {
-        const response = await request(server).post('/api/products').send({
+        const response = await request(app).post('/api/products').send({
             name: "Mouse - Testing",
             price: -50
         })
@@ -28,7 +34,7 @@ describe('POST /api/products', () => {
     })
 
     it('should display validation errors', async () => {
-        const response = await request(server).post('/api/products').send({})
+        const response = await request(app).post('/api/products').send({})
         expect(response.status).toBe(400)
         expect(response.body.errors).toHaveLength(4)
         expect(response.body).toHaveProperty('errors')
@@ -36,7 +42,7 @@ describe('POST /api/products', () => {
     })
 
     it('should create a new product', async () => {
-        const response = await request(server).post('/api/products').send({
+        const response = await request(app).post('/api/products').send({
             name: "Mouse - Testing",
             price: 60
         })
@@ -54,14 +60,14 @@ describe('POST /api/products', () => {
 describe('GET /api/products', () => {
 
     it('should check if api/products url exists', async () => {
-        const response = await request(server).get('/api/products')
+        const response = await request(app).get('/api/products')
 
         expect(response.status).not.toBe(404)
     })
 
 
     it('GET a JSON response with products', async () => {
-        const response = await request(server).get('/api/products')
+        const response = await request(app).get('/api/products')
 
         expect(response.status).toBe(200)
         expect(response.headers['content-type']).toMatch(/json/)
@@ -76,7 +82,7 @@ describe('GET /api/products', () => {
 describe('GET /api/products/:id', () => {
     it('should return 404 a response for a non-exist product', async () => {
         const productId = 2000
-        const response = await request(server).get(`/api/products/${productId}`)
+        const response = await request(app).get(`/api/products/${productId}`)
 
         expect(response.status).toBe(404)
         expect(response.body).toHaveProperty('error')
@@ -84,7 +90,7 @@ describe('GET /api/products/:id', () => {
     })
 
     it('should check a valid ID in the URL', async () => {
-        const response = await request(server).get(`/api/products/not-valid-url`)
+        const response = await request(app).get(`/api/products/not-valid-url`)
 
         expect(response.status).toBe(400)
         expect(response.body).toHaveProperty('errors')
@@ -93,7 +99,7 @@ describe('GET /api/products/:id', () => {
     })
 
     it('GET a JSON response for a single product', async () => {
-        const response = await request(server).get(`/api/products/1`)
+        const response = await request(app).get(`/api/products/1`)
 
         expect(response.status).toBe(200)
         expect(response.body).toHaveProperty('data')
@@ -103,7 +109,7 @@ describe('GET /api/products/:id', () => {
 
 describe('PUT /api/products/:id', () => {
     it('should check a valid ID in the URL', async () => {
-        const response = await request(server).put(`/api/products/not-valid-url`).send({
+        const response = await request(app).put(`/api/products/not-valid-url`).send({
             name: "Alexa con pantalla",
             price: 120,
             availability: true
@@ -116,7 +122,7 @@ describe('PUT /api/products/:id', () => {
     })
 
     it('should display validation error messages when updating a product', async () => {
-        const response = await request(server).put('/api/products/1').send({})
+        const response = await request(app).put('/api/products/1').send({})
 
         expect(response.status).toBe(400)
         expect(response.body).toHaveProperty('errors')
@@ -128,7 +134,7 @@ describe('PUT /api/products/:id', () => {
     })
 
     it('should validate that the price is grater than 0', async () => {
-        const response = await request(server).put('/api/products/1').send({
+        const response = await request(app).put('/api/products/1').send({
             name: "Alexa con pantalla",
             price: 0,
             availability: true
@@ -146,7 +152,7 @@ describe('PUT /api/products/:id', () => {
 
     it('should return a 404 response for a non-existent product', async () => {
         const productId = 2000
-        const response = await request(server).put(`/api/products/${productId}`).send({
+        const response = await request(app).put(`/api/products/${productId}`).send({
             name: "Alexa con pantalla",
             price: 130,
             availability: true
@@ -161,7 +167,7 @@ describe('PUT /api/products/:id', () => {
     })
 
     it('should update an existing product with valid data', async () => {
-        const response = await request(server).put(`/api/products/1`).send({
+        const response = await request(app).put(`/api/products/1`).send({
             name: "Alexa con pantalla",
             price: 130,
             availability: true
@@ -181,9 +187,9 @@ describe('PUT /api/products/:id', () => {
 })
 
 describe('PATCH /api/products/:id', () => {
-    it('should return a 404 response for a non-existing product', async() => {
+    it('should return a 404 response for a non-existing product', async () => {
         const productId = 3000
-        const response = await request(server).patch(`/api/products/${productId}`).send({
+        const response = await request(app).patch(`/api/products/${productId}`).send({
             price: 130
         })
 
@@ -195,7 +201,7 @@ describe('PATCH /api/products/:id', () => {
     })
 
     it('should update an existing product with valid data', async () => {
-        const response = await request(server).patch(`/api/products/1`).send({
+        const response = await request(app).patch(`/api/products/1`).send({
             price: 130
         })
 
@@ -212,7 +218,7 @@ describe('PATCH /api/products/:id', () => {
 
 describe('DELETE /api/products/:id', () => {
     it('should check a valid ID', async () => {
-        const response = await request(server).delete('/api/products/invalid-url')
+        const response = await request(app).delete('/api/products/invalid-url')
 
         expect(response.status).toBe(400)
         expect(response.body).toHaveProperty('errors')
@@ -221,7 +227,7 @@ describe('DELETE /api/products/:id', () => {
 
     it('should return a 404 response for a non-existent product', async () => {
         const productId = 3000
-        const response = await request(server).delete(`/api/products/${productId}`)
+        const response = await request(app).delete(`/api/products/${productId}`)
 
         expect(response.status).toBe(404)
         expect(response.body.error).toBe('No se ha encontrado el producto')
@@ -229,7 +235,7 @@ describe('DELETE /api/products/:id', () => {
     })
 
     it('should delete a product', async () => {
-        const response = await request(server).delete(`/api/products/1`)
+        const response = await request(app).delete(`/api/products/1`)
 
         expect(response.status).toBe(200)
         expect(response.body.data).toBe('Producto eliminado')

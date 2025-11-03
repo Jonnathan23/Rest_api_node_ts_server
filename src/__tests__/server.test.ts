@@ -1,16 +1,26 @@
-import  { connectDB } from '../server'
-import db from '../config/db'
+import { Sequelize } from 'sequelize-typescript'
+import { DatabaseConnection, envs } from '../config'
 
-
-jest.mock('../config/db')
 
 describe('connect DB', () => {
-    it('should hanlde databe connection error', async () => {
-        jest.spyOn(db, 'authenticate').mockRejectedValueOnce(new Error('Error al conectar a la BD'))
-        const consoleSpy = jest.spyOn(console, 'log')
+    it('should handle database connection error', async () => {
+        // Espía el método real de Sequelize (afecta a todas las instancias nuevas)
+        const authSpy = jest
+            .spyOn(Sequelize.prototype, 'authenticate')
+            .mockRejectedValueOnce(new Error('Error al conectar a la BD'))
 
-        await connectDB()
+        const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => { })
 
-        expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Error al conectar a la BD'))
+        const urlDatabase = envs.DATABASE_URL
+        const databaseConnection = new DatabaseConnection({ ulrDatabase: urlDatabase, logging: true })
+
+        await databaseConnection.connect()
+
+        expect(consoleSpy).toHaveBeenCalledWith(
+            expect.stringContaining('Error al conectar a la BD')
+        )
+
+        authSpy.mockRestore()
+        consoleSpy.mockRestore()
     })
 })

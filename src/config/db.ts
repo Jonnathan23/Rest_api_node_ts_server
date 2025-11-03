@@ -7,29 +7,33 @@ interface Options {
 }
 
 export class DatabaseConnection {
-
-    private readonly ulrDatabase: string;
-    private readonly logging: boolean;
+    
+    private readonly db: Sequelize
 
     constructor(options: Options) {
-        const { ulrDatabase, logging = false } = options
-        this.ulrDatabase = ulrDatabase
-        this.logging = logging
+        const { ulrDatabase, logging = false } = options        
+
+        const db = new Sequelize(ulrDatabase, {
+            models: [__dirname + '/../models/**/*'],
+            logging: logging
+        })
+
+        this.db = db
     }
 
     async connect() {
-        const db = new Sequelize(this.ulrDatabase, {
-            models: [__dirname + '/../models/**/*'],
-            logging: this.logging
-        })
-
         try {
-            await db.authenticate()
-            db.sync()
+            await this.db.authenticate()
+            this.db.sync()
             console.log(colors.blue.bold('Conexion exitosa a la BD'))
         } catch (error) {
             console.log(colors.red.bold('Error al conectar a la BD'))
             console.log(error)
         }
     }
+
+    getConnection() {
+        return this.db
+    }
+    
 }

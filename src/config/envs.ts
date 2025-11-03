@@ -1,6 +1,9 @@
 
 import { get } from 'env-var';
-process.loadEnvFile();
+import path from 'node:path'
+
+process.loadEnvFile(path.resolve(process.cwd(), '.env'))
+
 
 export const envs = {
     PORT: get('PORT').required().asInt(),
@@ -11,6 +14,4 @@ export const envs = {
     ARGV_3: process.argv[3] ?? '',
     SWAGGER_URL: process.argv[3] ? get('SWAGGER_URL').required().asString() : '',
     NODE_ENV: process.env.NODE_ENV ?? '',
-
-
 }
