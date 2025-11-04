@@ -1,13 +1,15 @@
 import request from 'supertest'
-import { makeAppForTests } from '../../__tests__/makeAppForTests'
+import { Express } from 'express';
+import { TestSetup, TestInstances } from '../../__tests__/makeAppForTests'
 
-let app: import('express').Express;
+let app: Express;
 
 beforeAll(async () => {
-    // usa connectDB:true si QUIERES realmente conectar a BD en pruebas
-    app = await makeAppForTests({ connectDB: true });
+    // Simplemente pides la instancia.
+    // La clase se encarga de si debe crearla o devolver la existente.
+    const instances = await TestSetup.getInstances();
+    app = instances.app;
 });
-
 describe('POST /api/products', () => {
 
 

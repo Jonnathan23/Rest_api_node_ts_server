@@ -32,6 +32,10 @@ export class DatabaseConnection {
         }
     }
 
+    async disconnect() {
+        await this.db.close()
+    }
+
     getConnection() {
         return this.db
     }
