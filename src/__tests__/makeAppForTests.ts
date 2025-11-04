@@ -12,7 +12,7 @@ export interface ServerTest {
 export class TestSetup {
 
     private static serverTest: ServerTest | null = null;
-    private static setupPromise: Promise<ServerTest> | null = null;
+    private static inCreationProcess: Promise<ServerTest> | null = null;
 
 
     private constructor() { }
@@ -25,21 +25,21 @@ export class TestSetup {
         }
 
         // CASO 2: Se está creando. Devolver la promesa existente.
-        if (TestSetup.setupPromise) {
-            return TestSetup.setupPromise;
+        if (TestSetup.inCreationProcess) {
+            return TestSetup.inCreationProcess;
         }
 
         // CASO 3: Primera vez. Crearlo.
-        TestSetup.setupPromise = TestSetup.buildTestApp().then(newServerTest => {
+        TestSetup.inCreationProcess = TestSetup.buildTestApp().then(newServerTest => {
             TestSetup.serverTest = newServerTest;      // Guardar el resultado
-            TestSetup.setupPromise = null;  // Limpiar la promesa en curso
+            TestSetup.inCreationProcess = null;  // Limpiar la promesa en curso
             return newServerTest;
         }).catch(err => {
-            TestSetup.setupPromise = null; // Limpiar en error
+            TestSetup.inCreationProcess = null; // Limpiar en error
             throw err;
         });
 
-        return TestSetup.setupPromise;
+        return TestSetup.inCreationProcess;
     }
 
     /**
@@ -78,9 +78,9 @@ export class TestSetup {
         if (TestSetup.serverTest && TestSetup.serverTest.db) {
             await TestSetup.serverTest.db.disconnect();
             TestSetup.serverTest = null;
-        } else if (TestSetup.setupPromise) {
+        } else if (TestSetup.inCreationProcess) {
             // Caso raro: se pide cerrar mientras se está creando
-            const inst = await TestSetup.setupPromise;
+            const inst = await TestSetup.inCreationProcess;
             await inst.db.disconnect();
             TestSetup.serverTest = null;
         }
