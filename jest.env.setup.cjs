@@ -9,4 +9,5 @@ const envPath =
     process.env.DOTENV_CONFIG_PATH
     || (process.env.NODE_ENV === 'test' ? '.env.test' : '.env');
 
+console.log(`Cargando variables de entorno desde ${envPath}`);
 dotenv.config({ path: path.resolve(process.cwd(), envPath) });

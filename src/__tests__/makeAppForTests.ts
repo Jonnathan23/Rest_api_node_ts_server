@@ -3,36 +3,25 @@ import { CorsConfig, DatabaseConnection, envs } from '../config';
 import { Server } from '../server';
 import router from '../routes';
 
-// Un 'type' para lo que la clase va a almacenar
-export interface TestInstances {
+
+export interface ServerTest {
     app: Express;
     db: DatabaseConnection;
 }
 
-// -----------------------------------------------------------
-// TU CLASE SINGLETON
-// -----------------------------------------------------------
 export class TestSetup {
 
-    // 1. Almacenes estáticos (privados) para la instancia y la promesa
-    private static instance: TestInstances | null = null;
-    private static setupPromise: Promise<TestInstances> | null = null;
+    private static serverTest: ServerTest | null = null;
+    private static setupPromise: Promise<ServerTest> | null = null;
 
-    /**
-     * El constructor es privado, por lo que nadie puede hacer 'new TestSetup()'.
-     * Esto FUERZA a que se use el método estático .getInstances()
-     */
+
     private constructor() { }
 
-    /**
-     * El método estático principal para obtener la app y la DB.
-     * Es el equivalente a tu 'makeAppForTests' pero con lógica de singleton.
-     */
-    public static async getInstances(): Promise<TestInstances> {
+    public static async getInstances(): Promise<ServerTest> {
 
         // CASO 1: Ya está creado. Devolverlo.
-        if (TestSetup.instance) {
-            return Promise.resolve(TestSetup.instance);
+        if (TestSetup.serverTest) {
+            return Promise.resolve(TestSetup.serverTest);
         }
 
         // CASO 2: Se está creando. Devolver la promesa existente.
@@ -41,10 +30,10 @@ export class TestSetup {
         }
 
         // CASO 3: Primera vez. Crearlo.
-        TestSetup.setupPromise = TestSetup.buildTestApp().then(inst => {
-            TestSetup.instance = inst;      // Guardar el resultado
+        TestSetup.setupPromise = TestSetup.buildTestApp().then(newServerTest => {
+            TestSetup.serverTest = newServerTest;      // Guardar el resultado
             TestSetup.setupPromise = null;  // Limpiar la promesa en curso
-            return inst;
+            return newServerTest;
         }).catch(err => {
             TestSetup.setupPromise = null; // Limpiar en error
             throw err;
@@ -56,7 +45,7 @@ export class TestSetup {
     /**
      * Lógica de construcción (privada)
      */
-    private static async buildTestApp(): Promise<TestInstances> {
+    private static async buildTestApp(): Promise<ServerTest> {
         console.log('[TestSetup] Creando instancia de App y BD por primera vez...');
 
         // 1. Conectar a la BD
@@ -78,21 +67,22 @@ export class TestSetup {
         const server = new Server({ port: 0, router, corsConfig });
 
         console.log('[TestSetup] Instancia creada con éxito.');
-        return { app: server.express, db };
+        const newServerTest: ServerTest = { app: server.express, db };
+        return newServerTest;
     }
 
     /**
      * Método estático para el teardown global.
      */
     public static async close(): Promise<void> {
-        if (TestSetup.instance && TestSetup.instance.db) {
-            await TestSetup.instance.db.disconnect();
-            TestSetup.instance = null;
+        if (TestSetup.serverTest && TestSetup.serverTest.db) {
+            await TestSetup.serverTest.db.disconnect();
+            TestSetup.serverTest = null;
         } else if (TestSetup.setupPromise) {
             // Caso raro: se pide cerrar mientras se está creando
             const inst = await TestSetup.setupPromise;
             await inst.db.disconnect();
-            TestSetup.instance = null;
+            TestSetup.serverTest = null;
         }
     }
 }
