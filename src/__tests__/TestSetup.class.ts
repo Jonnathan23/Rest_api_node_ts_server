@@ -51,6 +51,7 @@ export class TestSetup {
         // 1. Conectar a la BD
         const urlDatabase = envs.DATABASE_URL;
         const db = new DatabaseConnection({ ulrDatabase: urlDatabase, logging: false });
+        console.log('[TestSetup] Conectando a la BD...');
         await db.connect(true);
 
         // 2. Configurar CORS (forzando 'test')

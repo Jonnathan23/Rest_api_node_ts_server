@@ -1,6 +1,6 @@
 import request from 'supertest'
 import { Express } from 'express';
-import { TestSetup } from '../../__tests__/makeAppForTests'
+import { TestSetup } from '../../__tests__/TestSetup.class'
 
 let app: Express;
 
