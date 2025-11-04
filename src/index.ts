@@ -26,6 +26,5 @@ async function main() {
 
     //Start server
     const server = new Server({ port: envs.PORT, router: router, corsConfig })
-    server.starApp()
-    return server
+    server.starApp()    
 }

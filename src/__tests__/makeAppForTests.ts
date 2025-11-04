@@ -3,12 +3,12 @@ import { CorsConfig, DatabaseConnection, envs } from '../config';
 import { Server } from '../server';
 import router from '../routes';
 
-process.loadEnvFile();
-
 type Options = {
     connectDB?: boolean;   // por si quieres saltarte BD en tests
     loggingDB?: boolean;   // silenciar logs
 };
+
+//export let db: DatabaseConnection;
 
 export async function makeAppForTests(opts: Options = {}): Promise<Express> {
     const { connectDB = true, loggingDB = false } = opts;
@@ -16,7 +16,7 @@ export async function makeAppForTests(opts: Options = {}): Promise<Express> {
     if (connectDB) {
         const urlDatabase = envs.DATABASE_URL;
         const db = new DatabaseConnection({ ulrDatabase: urlDatabase, logging: loggingDB });
-        await db.connect();
+        await db.connect(true);
     }
 
     const corsOptions = {

@@ -5,7 +5,7 @@ let app: import('express').Express;
 
 beforeAll(async () => {
     // usa connectDB:true si QUIERES realmente conectar a BD en pruebas
-    app = await makeAppForTests({ connectDB: false });
+    app = await makeAppForTests({ connectDB: true });
 });
 
 describe('POST /api/products', () => {

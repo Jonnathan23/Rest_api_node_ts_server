@@ -21,10 +21,10 @@ export class DatabaseConnection {
         this.db = db
     }
 
-    async connect() {
+    async connect(force: boolean = false) {
         try {
             await this.db.authenticate()
-            this.db.sync()
+            await this.db.sync({force})
             console.log(colors.blue.bold('Conexion exitosa a la BD'))
         } catch (error) {
             console.log(colors.red.bold('Error al conectar a la BD'))
