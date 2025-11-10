@@ -10,7 +10,7 @@ export const getProducts = async (req: Request, res: Response) => {
             limit: 3,
             attributes: { exclude: ['createdAt', 'updatedAt'] }
         })
-        res.json({ data: products })
+        res.status(200).json(products)
     } catch (error) {
         console.log(error)
     }
@@ -24,7 +24,7 @@ export const getProductsById = async (req: Request, res: Response) => {
 
         if (!product) return res.status(404).json({ error: 'No se ha encontrado el producto' })
 
-        res.json({ data: product })
+        res.status(200).json(product)
     } catch (error) {
         console.log(error)
     }
